@@ -1,0 +1,10 @@
+{
+	"extends": "@floraflow/tsconfig/base.json",
+	"compilerOptions": {
+		"lib": ["ES2024"],
+		"types": ["node"],
+		"noEmit": true,
+		"verbatimModuleSyntax": true
+	},
+	"include": ["src", "tsdown.config.ts"]
+}

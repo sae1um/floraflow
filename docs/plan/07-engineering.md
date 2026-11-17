@@ -25,11 +25,14 @@ floraflow/
 | Tool | For |
 | --- | --- |
 | pnpm workspaces | Packages and linking |
-| Turborepo | Cached `lint`, `typecheck`, `test`, `build` across packages |
+| Turborepo | Cached `typecheck`, `test`, `build` across packages |
 | TypeScript (strict) | Everything except firmware |
-| Biome | Lint and format in one fast tool |
+| Biome | Lint and format in one fast tool, run once from the root (`pnpm lint`, `pnpm format`) |
 | Vitest | Tests in every TS package |
 | Lefthook | Pre-commit: Biome on staged files |
+| tsdown | Bundles the API into one file for Render: `@floraflow/*` packages are inlined, npm dependencies stay external |
+
+Internal packages export their TypeScript source (`"exports": { ".": "./src/index.ts" }`) and have no build step. Vite, `tsx` and Vitest read the source directly, and the API's tsdown bundle inlines it, so Node never loads `.ts` files at runtime. `tsc` only typechecks (`noEmit`).
 
 ## Local development
 
@@ -56,7 +59,7 @@ Every pull request is checked; merges to main migrate the database first, then d
 
 | Workflow | Runs on | Steps |
 | --- | --- | --- |
-| `ci.yml` | Every PR and push | pnpm install (cached) → `turbo lint typecheck test build` → API integration tests against a Postgres service container |
+| `ci.yml` | Every PR and push | pnpm install (cached) → `pnpm lint` (Biome) → `turbo typecheck test build` → API integration tests against a Postgres service container |
 | `firmware.yml` | Changes under `firmware/` | `pio run -e d1_mini` (build) and `pio test -e native` (control-logic tests) |
 | `deploy.yml` | Merge to main | `drizzle-kit migrate` against Supabase → call Render's deploy hook (auto-deploy off, so the API never runs ahead of its schema) |
 | Cloudflare Pages | Merge to main | Git integration builds `apps/web` with `turbo build --filter=web`; preview URL on every PR |

@@ -138,6 +138,7 @@ One API instance means in-process caches are enough; no Redis until there are tw
 | `@sentry/node` | Error tracking |
 | `resend` | Auth emails |
 | `vitest` | Tests |
+| `tsdown` | Build: bundles `src/index.ts` to `dist/index.mjs`, inlining `@floraflow/*` workspace packages |
 
 ```text
 apps/api/src/
